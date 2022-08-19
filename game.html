@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+    <head>
+        <title>Boggle?</title>
+        <link rel="stylesheet" href="styles.css">
+        <link href="https://fonts.googleapis.com/css2?family=Silkscreen&display=swap" rel="stylesheet">
+    </head>
+    <body>
+        <div id="boggle">
+            <table>
+                <tr class="row1">
+                    <th id="0">A</th>
+                    <th id="1">B</th>
+                    <th id="2">C</th>
+                    <th id="3">D</th>
+                </tr>
+                <tr class="row2">
+                    <th id="4">E</th>
+                    <th id="5">F</th>
+                    <th id="6">G</th>
+                    <th id="7">H</th>
+                </tr>
+                <tr class="row3">
+                    <th id="8">I</th>
+                    <th id="9">J</th>
+                    <th id="10">K</th>
+                    <th id="11">L</th>
+                </tr>
+                <tr class="row4">
+                    <th id="12">M</th>
+                    <th id="13">N</th>
+                    <th id="14">O</th>
+                    <th id="15">P</th>
+                </tr>
+            </table>
+        </div>
+
+        <div class="new">
+            <button type="button" id="new-game" onclick="newGame()">New Game</button>
+            <button type="button" id="rules" onclick="rulesPopUp()">Rules</button>
+        </div>
+
+        <div id="MODAL">
+            <div class="content">            
+                <h1>
+                    <span style="color:#eccee4">R</span><span style="color:#d9ebd5">u</span><span style="color:#f3e6cf">l</span><span style="color: #cecdeb">e</span><span style="color: #b4d8fe">s</span>
+                </h1>
+                <p>
+                    Boggle is a word game designed by Allan Turoff and distributed by Hasbro. It involves a board made up of 16 cubic dice, where each die has a letter printed on each of its 6 sides. At the beginning of the game, the 16 dice are shaken and randomly distributed into a 4-by-4 tray, with only the top sides of the dice visible. The players compete to accumulate points by building valid words from the dice, according to these rules:
+                </p>
+                <ul>
+                    <li>
+                        A valid word must be composed by following a sequence of adjacent dice—two dice are adjacent if they are horizontal, vertical, or diagonal neighbors.
+                    </li>
+                    <li>
+                        A valid word can use each die at most once.
+                    </li>
+                    <li>
+                        A valid word must contain at least 3 letters.
+                    </li>
+                    <li>
+                        A valid word must be in the dictionary (which typically does not contain proper nouns).
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+
+        <form id="submission">
+            <label for="guess">Guess here!</label><br>
+            <input type="text" id="guess" name ="guess" />
+            <button type="submit">Submit</button>
+        </form>
+
+        <h2>your guesses</h2>
+        <div id="guess-list">
+            <!-- correct guesses go here -->
+        </div>
+
+        <div id="score-board">
+            <h3>score: </h3><span id="score">0</span>
+        </div>
+        <script src="game.js"></script>
+    </body>
+</html>
