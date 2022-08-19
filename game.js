@@ -295,17 +295,20 @@ document.querySelector('form').addEventListener('submit', function(e){
     const guessedList = document.getElementById('guess-list');
     const guessedWord = document.querySelector('input').value;
     if(wordList.includes(guessedWord.toLowerCase())){
-        // if(adjacent) {
-        // //adjusting score
+        for(let i = 0; i < guessedWord.length; i++){
+            //word = toe
+            let allPositions = getPositions(guessedWord[i]);
+            //allPositions = [3,6,14]
+            for(let j = 0; j < allPositions.length; j++){
+                let isValidWord = checkAllSquares(guessedWord, allPositions[j], 1, usedArr = []);
+            }
+
+            //implement recursion
+        }
+
         let count = 1*document.getElementById('score').innerHTML;
         console.log(count);
-        let wordLength = guessedWord.length;
-        for(let i = 0; i < guessedWord.length; i++){
-            if(guessedWord[i].toLowerCase() === 'q' && guessedWord[i+1].toLowerCase() === 'u'){
-                wordLength -= 1;
-            }
-        }
-        switch(wordLength){
+        switch(guessedWord.length){
             case 3:
             case 4:
                 count++;
@@ -325,11 +328,46 @@ document.querySelector('form').addEventListener('submit', function(e){
         }
         let score = document.getElementById('score');
         score.innerHTML = count.toString();
-        // }
 
         //appending correct guess to guess list
         let correctGuess = document.createElement('p');
         correctGuess.innerHTML = guessedWord;
         guessedList.appendChild(correctGuess);
     }
-})
+});
+
+function getAdjacentNumbers(i){
+    let adjacentArr = [i-1, i+1, i+3, i+4, i+5, i-5, i-4, i-3];
+    return adjacentArr.filter((item) => item > -1 && item < 16);
+}
+
+function getPositions(char){
+    return boardArr.filter((item) => item === char);
+
+}
+
+function checkAllSquares(word, position, index, used){
+        if(word.length === index){
+            return true;
+        }
+        used.push(position);
+        //array of valid positions [2,6,7]
+        let validSquares = getAdjacentNumbers(position);
+        for(let h = 0; h < used.length; h++){
+            if(validSquares.includes(used[h])){
+                validSquares.splice(h,1);
+            }
+        }
+
+        for(let k = 0; k < validSquares.length; k++){
+            let validPosition = validSquares[k]; 
+            if(boardArr[validPosition] === guessedWord[index]){
+                let checkIndexes = checkAllSquares(guessedWord, validPosition, index+1, used); 
+                if(checkIndexes){
+                    return checkIndexes;
+                }
+            }
+        }
+
+        return false;
+}
