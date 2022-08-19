@@ -16,21 +16,21 @@ function getColor(){
     }
   }
 
-let boardArr = [];
+let boardArr = ['d', 'm', 'o', 't', 'i', 'e', 't', 'e', 's', 'f', 'o', 'l', 'l', 'e','t','r'];
 
 const newGame = () => {
-    boardArr = [];
-    for(let i = 0; i < 16; i++) {
-        let square = document.getElementById(`${i}`);
-        square.className = "letters";
-        square.innerHTML = String.fromCharCode(65+Math.floor(Math.random() * 26));
-        if(square.innerHTML === 'Q'){
-            square.innerHTML = 'Q' + 'u';
-        }
-        boardArr.push(square.innerText);
-        console.log(boardArr);
-        square.style.color = getColor();
-    }   
+    boardArr = ['d', 'm', 'o', 't', 'i', 'e', 't', 'e', 's', 'f', 'o', 'l', 'l', 'e','t','r'];
+    // for(let i = 0; i < 16; i++) {
+    //     let square = document.getElementById(`${i}`);
+    //     square.className = "letters";
+    //     square.innerHTML = String.fromCharCode(65+Math.floor(Math.random() * 26));
+    //     if(square.innerHTML === 'Q'){
+    //         square.innerHTML = 'Q' + 'u';
+    //     }
+    //     boardArr.push(square.innerText);
+    //     console.log(boardArr);
+    //     square.style.color = getColor();
+    // }   
     let child = document.getElementById("guess-list").lastElementChild; 
     while (child) {
         document.getElementById("guess-list").removeChild(child);
@@ -43,7 +43,7 @@ const newGame = () => {
 
 let wordList = [
     // Borrowed from xkcd password generator which borrowed it from wherever
-    "ability","able","aboard","about","above","accept","accident","according",
+    "ability","toe","able","aboard","about","above","accept","accident","according",
     "account","accurate","acres","across","act","action","active","activity",
     "actual","actually","add","addition","additional","adjective","adult","adventure",
     "advice","affect","afraid","after","afternoon","again","against","age",
@@ -197,7 +197,7 @@ let wordList = [
     "pictured","pie","piece","pig","pile","pilot","pine","pink",
     "pipe","pitch","place","plain","plan","plane","planet","planned",
     "planning","plant","plastic","plate","plates","play","pleasant","please",
-    "pleasure","plenty","plural","plus","pocket","poem","poet","poetry",
+    "pleasure","plenty","plural","plus","pocket","poem","parx","poet","poetry",
     "point","pole","police","policeman","political","pond","pony","pool",
     "poor","popular","population","porch","port","position","positive","possible",
     "possibly","post","pot","potatoes","pound","pour","powder","power",
@@ -286,55 +286,62 @@ let wordList = [
     "work","worker","world","worried","worry","worse","worth","would",
     "wrapped","write","writer","writing","written","wrong","wrote","yard",
     "year","yellow","yes","yesterday","yet","you","young","younger",
-    "your","yourself","youth","zero","zebra","zipper","zoo","zulu"
+    "your","yourself","youth","zero","zebra","zipper","zoo","zulu", "diet"
   ];
 
+let isValidWord = false;
 
 document.querySelector('form').addEventListener('submit', function(e){
+    console.log('hello');
     e.preventDefault();
     const guessedList = document.getElementById('guess-list');
     const guessedWord = document.querySelector('input').value;
+    console.log(guessedWord);
+    console.log(wordList.includes(guessedWord.toLowerCase()));
     if(wordList.includes(guessedWord.toLowerCase())){
-        for(let i = 0; i < guessedWord.length; i++){
-            //word = toe
-            let allPositions = getPositions(guessedWord[i]);
+            let allPositions = getPositions(guessedWord[0]);
+            console.log(allPositions);
             //allPositions = [3,6,14]
             for(let j = 0; j < allPositions.length; j++){
-                let isValidWord = checkAllSquares(guessedWord, allPositions[j], 1, usedArr = []);
+                isValidWord = checkAllSquares(guessedWord, allPositions[j], 1, usedArr = []);
+                console.log(isValidWord);
+                if(isValidWord){
+                    console.log("hello");
+                    let count = 1*document.getElementById('score').innerHTML;
+                    console.log(count);
+                    switch(guessedWord.length){
+                        case 3:
+                        case 4:
+                            count++;
+                        break;
+                        case 5:
+                            count += 2;
+                        break;
+                        case 6:
+                            count += 3;
+                        break;
+                        case 7:
+                            count += 5;
+                        break;
+                        case 8:
+                            count += 11;
+                        break;
+                    }
+                    let score = document.getElementById('score');
+                    score.innerHTML = count.toString();
+                
+                    //appending correct guess to guess list
+                    let correctGuess = document.createElement('p');
+                    correctGuess.innerHTML = guessedWord;
+                    guessedList.appendChild(correctGuess);
+                    break;
+                }
             }
 
-            //implement recursion
-        }
-
-        let count = 1*document.getElementById('score').innerHTML;
-        console.log(count);
-        switch(guessedWord.length){
-            case 3:
-            case 4:
-                count++;
-            break;
-            case 5:
-                count += 2;
-            break;
-            case 6:
-                count += 3;
-            break;
-            case 7:
-                count += 5;
-            break;
-            case 8:
-                count += 11;
-            break;
-        }
-        let score = document.getElementById('score');
-        score.innerHTML = count.toString();
-
-        //appending correct guess to guess list
-        let correctGuess = document.createElement('p');
-        correctGuess.innerHTML = guessedWord;
-        guessedList.appendChild(correctGuess);
+        
     }
 });
+
 
 function getAdjacentNumbers(i){
     let adjacentArr = [i-1, i+1, i+3, i+4, i+5, i-5, i-4, i-3];
@@ -342,7 +349,13 @@ function getAdjacentNumbers(i){
 }
 
 function getPositions(char){
-    return boardArr.filter((item) => item === char);
+    let positions = [];
+    for(let i = 0; i < boardArr.length; i++){
+        if(boardArr[i] === char){
+            positions.push(i)
+        }
+    }
+    return positions;
 
 }
 
@@ -361,8 +374,8 @@ function checkAllSquares(word, position, index, used){
 
         for(let k = 0; k < validSquares.length; k++){
             let validPosition = validSquares[k]; 
-            if(boardArr[validPosition] === guessedWord[index]){
-                let checkIndexes = checkAllSquares(guessedWord, validPosition, index+1, used); 
+            if(boardArr[validPosition] === word[index]){
+                let checkIndexes = checkAllSquares(word, validPosition, index+1, used); 
                 if(checkIndexes){
                     return checkIndexes;
                 }
