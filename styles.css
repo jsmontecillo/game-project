@@ -96,3 +96,7 @@ button {
     font-family: 'Silkscreen';
     margin: 3px;
 }
+
+.toggle-error {
+    display: none;
+}

@@ -17,20 +17,24 @@ function getColor(){
   }
 
 let boardArr = ['d', 'm', 'o', 't', 'i', 'e', 't', 'e', 's', 'f', 'o', 'l', 'l', 'e','t','r'];
+let errorMessage = document.createElement('p');
+errorMessage.innerHTML = "Invalid Word!"
+errorMessage.style.color = "red";
 
 const newGame = () => {
-    boardArr = ['d', 'm', 'o', 't', 'i', 'e', 't', 'e', 's', 'f', 'o', 'l', 'l', 'e','t','r'];
-    // for(let i = 0; i < 16; i++) {
-    //     let square = document.getElementById(`${i}`);
-    //     square.className = "letters";
-    //     square.innerHTML = String.fromCharCode(65+Math.floor(Math.random() * 26));
-    //     if(square.innerHTML === 'Q'){
-    //         square.innerHTML = 'Q' + 'u';
-    //     }
-    //     boardArr.push(square.innerText);
-    //     console.log(boardArr);
-    //     square.style.color = getColor();
-    // }   
+    boardArr = [];
+    let possible = 'AAAAEEEEERRRIIIOOOTTTNNNSSSLLCCCUUDDPPMHGBFYWKVXZJQ'
+    for(let i = 0; i < 16; i++) {
+        let square = document.getElementById(`${i}`);
+        square.className = "letters";
+        square.innerHTML = possible.charAt(Math.floor(Math.random() * possible.length));
+        if(square.innerHTML === 'Q'){
+            square.innerHTML = 'Q' + 'u';
+        }
+        boardArr.push(square.innerText);
+        console.log(boardArr);
+        square.style.color = getColor();
+    }   
     let child = document.getElementById("guess-list").lastElementChild; 
     while (child) {
         document.getElementById("guess-list").removeChild(child);
@@ -39,15 +43,18 @@ const newGame = () => {
 
     let score = document.getElementById('score');
     score.innerHTML = '0';
+
+    errorMessage.className = 'toggle-error';
+
 }
 
 let wordList = [
     // Borrowed from xkcd password generator which borrowed it from wherever
     "ability","toe","able","aboard","about","above","accept","accident","according",
-    "account","accurate","acres","across","act","action","active","activity",
+    "account","accurate","acres","across","act","action","active","activity", "let",
     "actual","actually","add","addition","additional","adjective","adult","adventure",
     "advice","affect","afraid","after","afternoon","again","against","age",
-    "ago","agree","ahead","aid","air","airplane","alike","alive",
+    "ago","agree","ahead","aid","air","airplane","alike","alive", "foe",
     "all","allow","almost","alone","along","aloud","alphabet","already",
     "also","although","am","among","amount","ancient","angle","angry",
     "animal","announced","another","answer","ants","any","anybody","anyone",
@@ -292,23 +299,17 @@ let wordList = [
 let isValidWord = false;
 
 document.querySelector('form').addEventListener('submit', function(e){
-    console.log('hello');
     e.preventDefault();
     const guessedList = document.getElementById('guess-list');
     const guessedWord = document.querySelector('input').value;
-    console.log(guessedWord);
-    console.log(wordList.includes(guessedWord.toLowerCase()));
-    if(wordList.includes(guessedWord.toLowerCase())){
+    let body = document.getElementById('submission');
+    if(guessedWord.length > 2 && wordList.includes(guessedWord.toLowerCase())){
             let allPositions = getPositions(guessedWord[0]);
-            console.log(allPositions);
-            //allPositions = [3,6,14]
             for(let j = 0; j < allPositions.length; j++){
                 isValidWord = checkAllSquares(guessedWord, allPositions[j], 1, usedArr = []);
                 console.log(isValidWord);
                 if(isValidWord){
-                    console.log("hello");
                     let count = 1*document.getElementById('score').innerHTML;
-                    console.log(count);
                     switch(guessedWord.length){
                         case 3:
                         case 4:
@@ -335,10 +336,16 @@ document.querySelector('form').addEventListener('submit', function(e){
                     correctGuess.innerHTML = guessedWord;
                     guessedList.appendChild(correctGuess);
                     break;
+                } else if(!isValidWord){
+                    errorMessage.className = "";
+                    body.appendChild(errorMessage);
                 }
             }
 
         
+    } else {
+        errorMessage.className = "";
+        body.appendChild(errorMessage);
     }
 });
 
@@ -350,9 +357,10 @@ function getAdjacentNumbers(i){
 
 function getPositions(char){
     let positions = [];
-    for(let i = 0; i < boardArr.length; i++){
-        if(boardArr[i] === char){
-            positions.push(i)
+    for(let a = 0; a < boardArr.length; a++){
+        if(boardArr[a].toLowerCase() === char){
+            console.log(a);
+            positions.push(a);
         }
     }
     return positions;
@@ -365,17 +373,23 @@ function checkAllSquares(word, position, index, used){
         }
         used.push(position);
         //array of valid positions [2,6,7]
+        console.log(used);
         let validSquares = getAdjacentNumbers(position);
         for(let h = 0; h < used.length; h++){
+            let usedPosition = validSquares.indexOf(used[h]);
             if(validSquares.includes(used[h])){
-                validSquares.splice(h,1);
+                validSquares.splice(usedPosition,1);
             }
         }
+        console.log(validSquares);
 
         for(let k = 0; k < validSquares.length; k++){
             let validPosition = validSquares[k]; 
-            if(boardArr[validPosition] === word[index]){
+            console.log(validSquares[k]);
+            console.log(word[index]);
+            if(boardArr[validPosition].toLowerCase() === word[index]){
                 let checkIndexes = checkAllSquares(word, validPosition, index+1, used); 
+                console.log(checkIndexes);
                 if(checkIndexes){
                     return checkIndexes;
                 }
